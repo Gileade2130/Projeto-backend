@@ -1,24 +1,25 @@
 const express = require('express');
+const serverless = require('serverless-http');
 const cors = require('cors');
-const app = express();
 
+const app = express();
 app.use(express.json());
 app.use(cors());
 
 let tarefas = [];
 
-app.get('/tarefas', (req, res) => {
+app.get('/api/tarefas', (req, res) => {
   res.status(200).json(tarefas);
 });
 
-app.post('/tarefas', (req, res) => {
+app.post('/api/tarefas', (req, res) => {
   const novaTarefa = req.body;
-  novaTarefa.id = Date.now(); 
+  novaTarefa.id = Date.now();
   tarefas.push(novaTarefa);
   res.status(201).json(novaTarefa);
 });
 
-app.delete('/tarefas/:id', (req, res) => {
+app.delete('/api/tarefas/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const initialLength = tarefas.length;
   tarefas = tarefas.filter(tarefa => tarefa.id !== id);
@@ -30,3 +31,4 @@ app.delete('/tarefas/:id', (req, res) => {
 });
 
 module.exports = app;
+module.exports.handler = serverless(app);
